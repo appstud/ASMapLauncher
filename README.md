@@ -1,15 +1,13 @@
-[![Build Status](https://travis-ci.org/abdullahselek/ASMapLauncher.svg?branch=master)](https://travis-ci.org/abdullahselek/ASMapLauncher)
-![CocoaPods Compatible](https://img.shields.io/cocoapods/v/ASMapLauncher.svg)
-[![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
-![Platform](https://img.shields.io/cocoapods/p/ASMapLauncher.svg?style=flat)
-![License](https://img.shields.io/dub/l/vibe-d.svg)
+![CocoaPods Compatible](https://img.shields.io/badge/pod-v1.0.0-blue)
+![Platform](https://img.shields.io/badge/platform-iOS-lightgrey)
+![License](https://img.shields.io/badge/license-MIT-brightgreen)
 
-# ASMapLauncher
-ASMapLauncher is a library for iOS written in Swift that helps navigation with various mapping applications.
+# AppstudMapLauncher
+AppstudMapLauncher is a library for iOS written in Swift that helps navigation with various mapping applications.
 
 ## Requirements
 
-| ASMapLauncher Version | Minimum iOS Target  | Swift Version |
+| AppstudMapLauncher Version | Minimum iOS Target  | Swift Version |
 |:--------------------:|:---------------------------:|:---------------------------:|
 | 1.0.7 | 9.x | 4.2 |
 | 1.0.6 | 8.x | 4.0 |
@@ -21,44 +19,26 @@ CocoaPods is a dependency manager for Cocoa projects. You can install it with th
 ```	
 $ gem install cocoapods
 ```
-To integrate ASMapLauncher into your Xcode project using CocoaPods, specify it in your Podfile:
+To integrate AppstudMapLauncher into your Xcode project using CocoaPods, specify it in your Podfile:
 ```
 source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '9.0'
 use_frameworks!
 
 target '<Your Target Name>' do
-	pod 'ASMapLauncher', '1.0.7'
+	pod 'AppstudMapLauncher', '1.0.7'
 end
 ```
 Then, run the following command:
 ```
 $ pod install
 ```
-## Carthage
-
-Carthage is a decentralized dependency manager that builds your dependencies and provides you with binary frameworks.
-
-You can install Carthage with Homebrew using the following command:
-
-```
-brew update
-brew install carthage
-```
-
-To integrate ASMapLauncher into your Xcode project using Carthage, specify it in your Cartfile:
-
-```
-github "abdullahselek/ASMapLauncher" ~> 1.0.7
-```
-
-Run carthage update to build the framework and drag the built ASMapLauncher.framework into your Xcode project.
 
 ## Usage
 
-First initiate ASMapLauncher and check for a selected mapping application that installed on device
+First initiate AppstudMapLauncher and check for a selected mapping application that installed on device
 ```
-let mapLauncher = ASMapLauncher()
+let mapLauncher = AppstudMapLauncher()
 let isInstalled = mapLauncher.isMapAppInstalled(.here)
 ```
 
@@ -94,7 +74,7 @@ Supported mapping applications
 
 ## MIT License
 ```
-Copyright (c) 2015 Abdullah Selek
+Copyright (c) 2020 Appstud
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
