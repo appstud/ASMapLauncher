@@ -44,17 +44,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         self.mapApps = mapLauncher.getMapApps()
         let alertController = UIAlertController(title: "Choose your app for navigation", message: nil, preferredStyle: .actionSheet)
         for mapApp in self.mapApps {
-            let action = UIAlertAction(title: mapApp, style: .cancel) { action in
-                let destination: CLLocation! = CLLocation(latitude: 41.0053215, longitude: 29.0121795)
-                let fromMapPoint = MapPoint(location: CLLocation(latitude: self.currenctCoordinate.latitude,
-                                                                 longitude: self.currenctCoordinate.longitude),
-                                            name: "",
-                                            address: "")
-                let toMapPoint = MapPoint(location: CLLocation(latitude: destination.coordinate.latitude,
-                                                               longitude: destination.coordinate.longitude),
-                                          name: "",
-                                          address: "")
-                _ = self.mapLauncher.launchMapApp(MapApp(rawValue: mapApp)!, fromDirections: fromMapPoint, toDirection: toMapPoint)
+            let action = UIAlertAction(title: mapApp, style: .default) { action in
+                let fromMapPoint = MapPoint(location: nil,
+                                            name: nil,
+                                            address: "Appstud, 25 Rue Roquelaine, 31000 Toulouse")
+                let toMapPoint = MapPoint(location: nil,
+                                          name: nil,
+                                          address: "Aéroport Toulouse Blagnac, Toulouse")
+                _ = self.mapLauncher.launchMapApp(MapApp(rawValue: mapApp)!, fromDirections: fromMapPoint, toDirections: toMapPoint)
             }
             alertController.addAction(action)
         }

@@ -34,17 +34,17 @@ open class MapPoint {
     /**
      Location value for navigation
      */
-    internal var location: CLLocation!
+    internal var location: CLLocation?
 
     /**
      Place name
      */
-    internal var name: String!
+    internal var name: String?
 
     /**
      Place address
      */
-    internal var address: String!
+    internal var address: String?
 
     /**
      Initialize point object with given parameters
@@ -52,7 +52,7 @@ open class MapPoint {
      - parameter name: Name belongs to place
      - parameter address: Address belongs to place
      */
-    public init(location: CLLocation, name: String, address: String) {
+    public init(location: CLLocation?, name: String?, address: String?) {
         self.location = location
         self.name = name
         self.address = address

@@ -42,6 +42,50 @@ public enum MapApp : String {
     moovit = "Moovit"
 
     static let allValues = [apple, here, google, yandex, citymapper, navigon, transit, waze, moovit]
+
+    var supportsAddress: Bool {
+        switch self {
+        case .apple, .google:
+            return true
+        default:
+            return false
+        }
+    }
+
+    var supportsLocation: Bool {
+        switch self {
+        default:
+            return true
+        }
+    }
+
+    /**
+      Prepares url scheme prefix used to open app with given app type
+      - parameter mapApp: MapApp type
+      - returns: Url Prefix
+     */
+    var urlPrefix: String {
+        switch(self) {
+        case .here:
+            return "here-route://"
+        case .google:
+            return "comgooglemaps://"
+        case .yandex:
+            return "yandexnavi://"
+        case .citymapper:
+            return "citymapper://"
+        case .navigon:
+            return "navigon://"
+        case .transit:
+            return "transit://"
+        case .waze:
+            return "waze://"
+        case .moovit:
+            return "moovit://"
+        default:
+            return ""
+        }
+    }
 }
 
 /**
@@ -78,59 +122,92 @@ open class AppstudMapLauncher {
             }
         }
     }
-    
-    /**
-      Prepares url scheme prefix used to open app with given app type
-      - parameter mapApp: MapApp type
-      - returns: Url Prefix
-     */
-    internal func urlPrefixForMapApp(_ mapApp: MapApp) -> String {
-        switch(mapApp) {
-        case .here:
-            return "here-route://"
-        case .google:
-            return "comgooglemaps://"
-        case .yandex:
-            return "yandexnavi://"
-        case .citymapper:
-            return "citymapper://"
-        case .navigon:
-            return "navigon://"
-        case .transit:
-            return "transit://"
-        case .waze:
-            return "waze://"
-        case .moovit:
-            return "moovit://"
-        default:
-            return ""
-        }
-    }
-    
+
     /**
       Checks if app installed with given app type
       - parameter mapApp: MapApp
       - returns: Bool installed or not
      */
-    open func isMapAppInstalled(_ mapApp: MapApp) -> Bool {
+    private func isMapAppInstalled(_ mapApp: MapApp) -> Bool {
         if mapApp == .apple {
             return true
         }
-        
-        let urlPrefix: String = urlPrefixForMapApp(mapApp)
-        guard let url = URL(string: urlPrefix) else {
+        guard let url = URL(string: mapApp.urlPrefix) else {
             return false
         }
         return application.canOpenUrl(url)
     }
 
     /**
+      Checks if app installed with given app type and takes CLLocation as parameter
+      - parameter mapApp: MapApp
+      - returns: Bool installed or not
+     */
+    func isMapAppInstalledForLocation(_ mapApp: MapApp) -> Bool {
+        return mapApp.supportsLocation ? isMapAppInstalled(mapApp) : false
+    }
+
+    /**
+      Checks if app installed with given app type and takes address as parameter
+      - parameter mapApp: MapApp
+      - returns: Bool installed or not
+     */
+    open func isMapAppInstalledForAddress(_ mapApp: MapApp) -> Bool {
+        return mapApp.supportsAddress ? isMapAppInstalled(mapApp) : false
+    }
+
+    /**
       Launch navigation application with given app and directions
       - parameter mapApp: MapApp
-      - parameter fromDirections: MapPoint
-      - parameter toDirection: MapPoint
+      - parameter fromDirections: String
+      - parameter toDirections: String
+      - parameter fromDirectionsName: String?
+      - parameter toDirectionsName: String?
      */
-    open func launchMapApp(_ mapApp: MapApp, fromDirections: MapPoint!, toDirection: MapPoint!) -> Bool {
+    open func launchMapApp(_ mapApp: MapApp, fromDirections: String, toDirections: String, fromDirectionsName: String?, toDirectionsName: String?) -> Bool {
+        if !isMapAppInstalled(mapApp) {
+            return false
+        }
+        var urlString = ""
+        switch(mapApp) {
+        case .apple:
+            urlString = String(format: "http://maps.apple.com/?saddr=%@&daddr=%@",
+                                 formatString(fromDirections),
+                                 formatString(toDirections))
+        case .google:
+            urlString = String(format: "\(MapApp.google.urlPrefix)?saddr=%@&daddr=%@",
+                           formatString(fromDirections),
+                           formatString(toDirections))
+
+        default:
+            urlString = ""
+            return false
+        }
+        guard let url = URL(string: urlString) else {
+            return false
+        }
+        if #available(iOS 10.0, *) {
+            application.openURL(url, options: [:], completionHandler: nil)
+            return true
+        } else {
+            let isOpened = application.openUrl(url)
+            return isOpened
+        }
+    }
+
+    /**
+      Launch navigation application with given app and directions
+      - parameter mapApp: MapApp
+      - parameter fromDirections: CLLocation
+      - parameter toDirections: CLLocation
+      - parameter fromDirectionsName: String?
+      - parameter toDirectionsName: String?
+     */
+    open func launchMapApp(_ mapApp: MapApp, fromDirections: CLLocation, toDirections: CLLocation, fromDirectionsName: String?, toDirectionsName: String?) -> Bool {
+        let fromLatitude = fromDirections.coordinate.latitude
+        let fromLongitude = fromDirections.coordinate.longitude
+        let toLatitude = toDirections.coordinate.latitude
+        let toLongitude = toDirections.coordinate.longitude
         if !isMapAppInstalled(mapApp) {
             return false
         }
@@ -138,97 +215,83 @@ open class AppstudMapLauncher {
         switch(mapApp) {
         case .apple:
             urlString = String(format: "http://maps.apple.com/?saddr=%@&daddr=%@&z=14",
-                                 googleMapsString(fromDirections),
-                                 googleMapsString(toDirection))
+                                 googleMapsString(fromDirections, fromDirectionsName),
+                                 googleMapsString(toDirections, toDirectionsName))
         case .here:
             if #available(iOS 9.0, *) {
                 urlString = String(format: "https://share.here.com/r/%f,%f,%@/%f,%f,%@",
-                               fromDirections.location.coordinate.latitude,
-                               fromDirections.location.coordinate.longitude,
-                               fromDirections.name,
-                               toDirection.location.coordinate.latitude,
-                               toDirection.location.coordinate.longitude,
-                               toDirection.name)
+                               fromLatitude,
+                               fromLongitude,
+                               fromDirectionsName ?? "",
+                               toLatitude,
+                               toLongitude,
+                               toDirectionsName ?? "")
             } else {
-                urlString = String(format: "here-route://%f,%f,%@/%f,%f,%@",
-                               fromDirections.location.coordinate.latitude,
-                               fromDirections.location.coordinate.longitude,
-                               fromDirections.name,
-                               toDirection.location.coordinate.latitude,
-                               toDirection.location.coordinate.longitude,
-                               toDirection.name)
+                urlString = String(format: "\(MapApp.here.urlPrefix)%f,%f,%@/%f,%f,%@",
+                               fromLatitude,
+                               fromLongitude,
+                               fromDirectionsName ?? "",
+                               toLatitude,
+                               toLongitude,
+                               toDirectionsName ?? "")
             }
         case .google:
-            urlString = String(format: "comgooglemaps://?saddr=%@&daddr=%@",
-                           googleMapsString(fromDirections),
-                           googleMapsString(toDirection))
+            urlString = String(format: "\(MapApp.google.urlPrefix)?saddr=%@&daddr=%@",
+                           googleMapsString(fromDirections, fromDirectionsName),
+                           googleMapsString(toDirections, toDirectionsName))
         case .yandex:
-            urlString = String(format: "yandexnavi://build_route_on_map?lat_to=%f&lon_to=%f&lat_from=%f&lon_from=%f",
-                           toDirection.location.coordinate.latitude,
-                           toDirection.location.coordinate.longitude,
-                           fromDirections.location.coordinate.latitude,
-                           fromDirections.location.coordinate.longitude)
+            urlString = String(format: "\(MapApp.yandex.urlPrefix)build_route_on_map?lat_to=%f&lon_to=%f&lat_from=%f&lon_from=%f",
+                           toLatitude,
+                           toLongitude,
+                           fromLatitude,
+                           fromLongitude)
         case .citymapper:
             let params: NSMutableArray! = NSMutableArray(capacity: 10)
-            if CLLocationCoordinate2DIsValid(fromDirections.location.coordinate) {
+            if CLLocationCoordinate2DIsValid(fromDirections.coordinate) {
                 params.add(String(format: "startcoord=%f,%f",
-                                    fromDirections.location.coordinate.latitude,
-                                    fromDirections.location.coordinate.longitude))
-                if !fromDirections.name.isEmpty {
-                    params.add(String(format: "startname=%@", urlEncode(fromDirections.name)))
-                }
-                if !fromDirections.address.isEmpty {
-                    params.add(String(format: "startaddress=%@", urlEncode(fromDirections.address)))
+                                    fromLatitude,
+                                    fromLongitude))
+                if let fromName = fromDirectionsName, !fromName.isEmpty {
+                    params.add(String(format: "startname=%@", urlEncode(fromName)))
                 }
             }
-            if CLLocationCoordinate2DIsValid(toDirection.location.coordinate) {
+            if CLLocationCoordinate2DIsValid(toDirections.coordinate) {
                 params.add(String(format: "endcoord=%f,%f",
-                                    toDirection.location.coordinate.latitude,
-                                    toDirection.location.coordinate.longitude))
-                if !toDirection.name.isEmpty {
-                    params.add(String(format: "endname=%@", urlEncode(toDirection.name)))
-                }
-                if !toDirection.address.isEmpty {
-                    params.add(String(format: "endaddress=%@", urlEncode(toDirection.address)))
+                                    toLatitude,
+                                    toLongitude))
+                if let toName = toDirectionsName, !toName.isEmpty {
+                    params.add(String(format: "endname=%@", urlEncode(toName)))
                 }
             }
             
-            urlString = String(format: "citymapper://directions?%@", params.componentsJoined(by: "&"))
+            urlString = String(format: "\(MapApp.citymapper.urlPrefix)directions?%@", params.componentsJoined(by: "&"))
         case .navigon:
             var name: String = "Destination"
-            if !toDirection.name.isEmpty {
-                name = toDirection.name
+            if let toName = toDirectionsName, !toName.isEmpty {
+                name = toName
             }
             
-            urlString = String(format: "navigon://coordinate/%@/%f/%f",
+            urlString = String(format: "\(MapApp.navigon.urlPrefix)coordinate/%@/%f/%f",
                            urlEncode(name),
-                           toDirection.location.coordinate.longitude,
-                           toDirection.location.coordinate.latitude)
+                           toLongitude,
+                           toLatitude)
         case .transit:
             let params = NSMutableArray(capacity: 2)
-            if fromDirections != nil {
-                params.add(String(format: "from=%f,%f",
-                                    fromDirections.location.coordinate.latitude,
-                                    fromDirections.location.coordinate.longitude))
-            }
-            if toDirection != nil {
-                params.add(String(format: "to=%f,%f",
-                                    toDirection.location.coordinate.latitude,
-                                    toDirection.location.coordinate.longitude))
-            }
-            urlString = String(format: "transit://directions?%@", params.componentsJoined(by: "&"))
+            params.add(String(format: "from=%f,%f", fromLatitude, fromLongitude))
+            params.add(String(format: "to=%f,%f", toLatitude, toLongitude))
+            urlString = String(format: "\(MapApp.transit.urlPrefix)directions?%@", params.componentsJoined(by: "&"))
         case .waze:
-            urlString = String(format: "waze://?ll=%f,%f&navigate=yes",
-                           toDirection.location.coordinate.latitude,
-                           toDirection.location.coordinate.longitude)
+            urlString = String(format: "\(MapApp.waze.urlPrefix)?ll=%f,%f&navigate=yes",
+                           toLatitude,
+                           toLongitude)
         case .moovit:
-            urlString = String(format: "moovit://directions?dest_lat=%f&dest_lon=%f&dest_name%@=&orig_lat=%f&orig_lon=%f&orig_name=%@&auto_run=true&partner_id=%@",
-                           toDirection.location.coordinate.latitude,
-                           toDirection.location.coordinate.longitude,
-                           urlEncode(toDirection.name),
-                           fromDirections.location.coordinate.latitude,
-                           fromDirections.location.coordinate.longitude,
-                           urlEncode(fromDirections.name),
+            urlString = String(format: "\(MapApp.moovit.urlPrefix)directions?dest_lat=%f&dest_lon=%f&dest_name%@=&orig_lat=%f&orig_lon=%f&orig_name=%@&auto_run=true&partner_id=%@",
+                           toLatitude,
+                           toLongitude,
+                           urlEncode(toDirectionsName ?? ""),
+                           fromLatitude,
+                           fromLongitude,
+                           urlEncode(fromDirectionsName ?? ""),
                            Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String ?? "")
         }
         guard let url = URL(string: urlString) else {
@@ -242,28 +305,56 @@ open class AppstudMapLauncher {
             return isOpened
         }
     }
-    
+
     /**
-      Prepares deep linking url with given point
-      - parameter mapPoint: MapAppPoint
+      Launch navigation application with given app and directions
+      - parameter mapApp: MapApp
+      - parameter fromDirections: MapPoint
+      - parameter toDirections: MapPoint
+     */
+    open func launchMapApp(_ mapApp: MapApp, fromDirections: MapPoint, toDirections: MapPoint) -> Bool {
+        if let fromLocation = fromDirections.location, let toLocation = toDirections.location {
+            return launchMapApp(mapApp, fromDirections: fromLocation, toDirections: toLocation, fromDirectionsName: fromDirections.name, toDirectionsName: toDirections.name)
+        } else if let fromAddress = fromDirections.address, let toAddress = toDirections.address {
+            return launchMapApp(mapApp, fromDirections: fromAddress, toDirections: toAddress, fromDirectionsName: fromDirections.name, toDirectionsName: toDirections.name)
+        } else {
+            return false
+        }
+    }
+
+    /**
+      Prepares deep linking url with given address
+      - parameter address: String
       - returns: Deeplink url
      */
-    internal func googleMapsString(_ mapPoint: MapPoint) -> String {
-        if !CLLocationCoordinate2DIsValid(mapPoint.location.coordinate) {
+    internal func formatString(_ address: String) -> String {
+        var formattedAddress = address.replacingOccurrences(of: " ", with: "+")
+        formattedAddress = formattedAddress.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        return formattedAddress
+    }
+
+    /**
+      Prepares deep linking url with given location and name
+      - parameter location: CLLocation
+      - parameter locationName: String?
+      - returns: Deeplink url
+     */
+    internal func googleMapsString(_ location: CLLocation, _ locationName: String?) -> String {
+        guard CLLocationCoordinate2DIsValid(location.coordinate) else {
             return ""
         }
-        
-        if !mapPoint.name.isEmpty {
-            let encodedName = mapPoint.name.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)
+
+        if let name = locationName, !name.isEmpty {
+            let encodedName = name.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)
             return String(format: "%f,%f+(%@)",
-                            mapPoint.location.coordinate.latitude,
-                            mapPoint.location.coordinate.longitude,
+                            location.coordinate.latitude,
+                            location.coordinate.longitude,
                             encodedName!)
         }
-        
+
         return String(format: "%f,%f",
-                        mapPoint.location.coordinate.latitude,
-                        mapPoint.location.coordinate.longitude)
+                        location.coordinate.latitude,
+                        location.coordinate.longitude)
     }
     
     /**
