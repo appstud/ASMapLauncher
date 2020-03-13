@@ -9,9 +9,7 @@ AppstudMapLauncher is a library for iOS written in Swift that helps navigation w
 
 | AppstudMapLauncher Version | Minimum iOS Target  | Swift Version |
 |:--------------------:|:---------------------------:|:---------------------------:|
-| 1.0.7 | 9.x | 4.2 |
-| 1.0.6 | 8.x | 4.0 |
-| 1.0.5 | 8.0 | 3.x |
+| 1.0.0 | 9.x | 4.2 |
 
 ## CocoaPods
 
@@ -26,7 +24,7 @@ platform :ios, '9.0'
 use_frameworks!
 
 target '<Your Target Name>' do
-	pod 'AppstudMapLauncher', '1.0.7'
+	pod 'AppstudMapLauncher', '1.0.0'
 end
 ```
 Then, run the following command:
@@ -36,28 +34,17 @@ $ pod install
 
 ## Usage
 
-First initiate AppstudMapLauncher and check for a selected mapping application that installed on device
+First initiate AppstudMapLauncher and check for a selected mapping application that installed on device, then, launch selected mapping application
 ```
 let mapLauncher = AppstudMapLauncher()
-let isInstalled = mapLauncher.isMapAppInstalled(.here)
-```
+let origin: CLLocation! = CLLocation(latitude: 48.86794504363833, longitude: 2.39399198534056)
+let destination: CLLocation! = CLLocation(latitude: 41.0053215, longitude: 29.0121795)
+let fromMapPoint: MapPoint = MapPoint(location: CLLocation(latitude: origin.coordinate.latitude, longitude: origin.coordinate.longitude), name: nil, address: nil)
+let toMapPoint: MapPoint = MapPoint(location: CLLocation(latitude: destination.coordinate.latitude, longitude: destination.coordinate.longitude), name: nil, address: nil)
 
-Then, launch selected mapping application
-```
-if isInstalled {
-	let destination: CLLocation! = CLLocation(latitude: 41.0053215, longitude: 29.0121795)
-	let fromMapPoint: MapPoint! = MapPoint(location: CLLocation(latitude: currenctCoordinate.latitude,
-	longitude: currenctCoordinate.longitude),
-										   name: "", 
-										   address: "")
-    let toMapPoint: MapPoint! = MapPoint(location: CLLocation(latitude: destination.coordinate.latitude, longitude: destination.coordinate.longitude), 
-                                         name: "", 
-                                         address: "")
-    mapLauncher.launchMapApp(.here, 
-                             fromDirections: fromMapPoint, 
-                             toDirection: toMapPoint)
+if mapLauncher.canLaunchMapApp(.here, fromDirections: fromMapPoint, toDirections: toMapPoint) {
+    mapLauncher.launchMapApp(.here, fromDirections: fromMapPoint, toDirections: toMapPoint, transportMode: .drive)
 }
-
 ```
 Supported mapping applications
 ```
@@ -65,6 +52,7 @@ Supported mapping applications
 - HERE Maps
 - Google Maps
 - Yandex Navigator
+- Yandex.Navi
 - Citymapper
 - Navigon
 - The Transit App
