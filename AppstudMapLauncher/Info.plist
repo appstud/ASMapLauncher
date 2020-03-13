@@ -40,6 +40,7 @@
 	</array>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
+		<string>yandexmaps</string>
 		<string>comgooglemaps</string>
 		<string>yandexnavi</string>
 		<string>citymapper</string>
