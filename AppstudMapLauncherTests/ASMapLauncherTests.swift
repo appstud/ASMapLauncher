@@ -32,7 +32,7 @@ class AppstudMapLauncherTests: QuickSpec {
                     var urlPrefix: String!
 
                     beforeEach {
-                        urlPrefix = mapLauncher.urlPrefixForMapApp(.apple)
+                        urlPrefix = MapApp.apple.urlPrefix
                     }
 
                     it("should return empty prefix") {
@@ -44,7 +44,7 @@ class AppstudMapLauncherTests: QuickSpec {
                     var urlPrefix: String!
 
                     beforeEach {
-                        urlPrefix = mapLauncher.urlPrefixForMapApp(.here)
+                        urlPrefix = MapApp.here.urlPrefix
                     }
 
                     it("should return a valid prefix") {
@@ -56,7 +56,7 @@ class AppstudMapLauncherTests: QuickSpec {
                     var urlPrefix: String!
 
                     beforeEach {
-                        urlPrefix = mapLauncher.urlPrefixForMapApp(.google)
+                        urlPrefix = MapApp.google.urlPrefix
                     }
 
                     it("should return a valid prefix") {
@@ -68,7 +68,7 @@ class AppstudMapLauncherTests: QuickSpec {
                     var urlPrefix: String!
 
                     beforeEach {
-                        urlPrefix = mapLauncher.urlPrefixForMapApp(.yandex)
+                        urlPrefix = MapApp.yandexNavi.urlPrefix
                     }
 
                     it("should return a valid prefix") {
@@ -80,7 +80,7 @@ class AppstudMapLauncherTests: QuickSpec {
                     var urlPrefix: String!
 
                     beforeEach {
-                        urlPrefix = mapLauncher.urlPrefixForMapApp(.citymapper)
+                        urlPrefix = MapApp.citymapper.urlPrefix
                     }
 
                     it("should return a valid prefix") {
@@ -92,7 +92,7 @@ class AppstudMapLauncherTests: QuickSpec {
                     var urlPrefix: String!
 
                     beforeEach {
-                        urlPrefix = mapLauncher.urlPrefixForMapApp(.navigon)
+                        urlPrefix = MapApp.navigon.urlPrefix
                     }
 
                     it("should return a valid prefix") {
@@ -104,7 +104,7 @@ class AppstudMapLauncherTests: QuickSpec {
                     var urlPrefix: String!
 
                     beforeEach {
-                        urlPrefix = mapLauncher.urlPrefixForMapApp(.transit)
+                        urlPrefix = MapApp.transit.urlPrefix
                     }
 
                     it("should return a valid prefix") {
@@ -116,7 +116,7 @@ class AppstudMapLauncherTests: QuickSpec {
                     var urlPrefix: String!
 
                     beforeEach {
-                        urlPrefix = mapLauncher.urlPrefixForMapApp(.waze)
+                        urlPrefix = MapApp.waze.urlPrefix
                     }
 
                     it("should return a valid prefix") {
@@ -128,7 +128,7 @@ class AppstudMapLauncherTests: QuickSpec {
                     var urlPrefix: String!
 
                     beforeEach {
-                        urlPrefix = mapLauncher.urlPrefixForMapApp(.moovit)
+                        urlPrefix = MapApp.moovit.urlPrefix
                     }
 
                     it("should return a valid prefix") {
@@ -140,13 +140,13 @@ class AppstudMapLauncherTests: QuickSpec {
             describe(".isMapAppInstalled(_:)") {
                 context("for Apple Maps") {
                     it("it should return true") {
-                        expect(mapLauncher.isMapAppInstalled(.apple)).to(equal(true))
+                        expect(mapLauncher.isMapAppInstalledForLocation(.apple)).to(equal(true))
                     }
                 }
 
                 context("for HERE Maps") {
                     it("it should return true") {
-                        expect(mapLauncher.isMapAppInstalled(.here)).to(equal(false))
+                        expect(mapLauncher.isMapAppInstalledForLocation(.here)).to(equal(false))
                     }
                 }
             }
@@ -156,10 +156,7 @@ class AppstudMapLauncherTests: QuickSpec {
                     var deeplinkingString: String!
 
                     beforeEach {
-                        let mapPoint = MapPoint(location: CLLocation(latitude: 10.0, longitude: 10.0),
-                                                name: "TestName",
-                                                address: "TestAddress")
-                        deeplinkingString = mapLauncher.googleMapsString(mapPoint) as String
+                        deeplinkingString = mapLauncher.googleMapsString(CLLocation(latitude: 10.0, longitude: 10.0), "TestName") as String
                     }
 
                     it("should return a non nil string") {
@@ -171,10 +168,7 @@ class AppstudMapLauncherTests: QuickSpec {
                     var deeplinkingString: String!
 
                     beforeEach {
-                        let mapPoint = MapPoint(location: CLLocation(latitude: -9999.99, longitude: -9999.00),
-                                                name: "TestName",
-                                                address: "TestAddress")
-                        deeplinkingString = mapLauncher.googleMapsString(mapPoint) as String
+                        deeplinkingString = mapLauncher.googleMapsString(CLLocation(latitude: -9999.99, longitude: -9999.00), "TestName") as String
                     }
 
                     it("should return a empty string") {
@@ -186,10 +180,7 @@ class AppstudMapLauncherTests: QuickSpec {
                     var deeplinkingString: String!
 
                     beforeEach {
-                        let mapPoint = MapPoint(location: CLLocation(latitude: 10.0, longitude: 10.0),
-                                                name: "",
-                                                address: "TestAddress")
-                        deeplinkingString = mapLauncher.googleMapsString(mapPoint) as String
+                        deeplinkingString = mapLauncher.googleMapsString(CLLocation(latitude: 10.0, longitude: 10.0), "") as String
                     }
 
                     it("should return a string containts lat long") {
@@ -211,7 +202,7 @@ class AppstudMapLauncherTests: QuickSpec {
             }
 
             context(".getMapApps()") {
-                var apps = [String]()
+                var apps = [MapApp]()
 
                 beforeEach {
                     apps = mapLauncher.getMapApps()
@@ -235,7 +226,7 @@ class AppstudMapLauncherTests: QuickSpec {
 
                 context("for Apple Maps") {
                     beforeEach {
-                        isOpened = mapLauncher.launchMapApp(.apple, fromDirections: fromPoint, toDirection: toPoint)
+                        isOpened = mapLauncher.launchMapApp(.apple, fromDirections: fromPoint, toDirections: toPoint)
                     }
 
                     it("should launch given map app") {
@@ -246,7 +237,7 @@ class AppstudMapLauncherTests: QuickSpec {
                 context("for HERE Maps") {
                     beforeEach {
                         mapLauncher.application = ApplicationFake(openUrl: true)
-                        isOpened = mapLauncher.launchMapApp(.here, fromDirections: fromPoint, toDirection: toPoint)
+                        isOpened = mapLauncher.launchMapApp(.here, fromDirections: fromPoint, toDirections: toPoint)
                     }
 
                     it("should launch given map app") {
@@ -257,7 +248,7 @@ class AppstudMapLauncherTests: QuickSpec {
                 context("for Google Maps") {
                     beforeEach {
                         mapLauncher.application = ApplicationFake(openUrl: true)
-                        isOpened = mapLauncher.launchMapApp(.google, fromDirections: fromPoint, toDirection: toPoint)
+                        isOpened = mapLauncher.launchMapApp(.google, fromDirections: fromPoint, toDirections: toPoint)
                     }
 
                     it("should launch given map app") {
@@ -268,7 +259,7 @@ class AppstudMapLauncherTests: QuickSpec {
                 context("for Yandex Navigator") {
                     beforeEach {
                         mapLauncher.application = ApplicationFake(openUrl: true)
-                        isOpened = mapLauncher.launchMapApp(.yandex, fromDirections: fromPoint, toDirection: toPoint)
+                        isOpened = mapLauncher.launchMapApp(.yandexNavi, fromDirections: fromPoint, toDirections: toPoint)
                     }
 
                     it("should launch given map app") {
@@ -279,7 +270,7 @@ class AppstudMapLauncherTests: QuickSpec {
                 context("for CityMapper") {
                     beforeEach {
                         mapLauncher.application = ApplicationFake(openUrl: true)
-                        isOpened = mapLauncher.launchMapApp(.citymapper, fromDirections: fromPoint, toDirection: toPoint)
+                        isOpened = mapLauncher.launchMapApp(.citymapper, fromDirections: fromPoint, toDirections: toPoint)
                     }
 
                     it("should launch given map app") {
@@ -290,7 +281,7 @@ class AppstudMapLauncherTests: QuickSpec {
                 context("for Navigon") {
                     beforeEach {
                         mapLauncher.application = ApplicationFake(openUrl: true)
-                        isOpened = mapLauncher.launchMapApp(.navigon, fromDirections: fromPoint, toDirection: toPoint)
+                        isOpened = mapLauncher.launchMapApp(.navigon, fromDirections: fromPoint, toDirections: toPoint)
                     }
 
                     it("should launch given map app") {
@@ -301,7 +292,7 @@ class AppstudMapLauncherTests: QuickSpec {
                 context("for Transit") {
                     beforeEach {
                         mapLauncher.application = ApplicationFake(openUrl: true)
-                        isOpened = mapLauncher.launchMapApp(.transit, fromDirections: fromPoint, toDirection: toPoint)
+                        isOpened = mapLauncher.launchMapApp(.transit, fromDirections: fromPoint, toDirections: toPoint)
                     }
 
                     it("should launch given map app") {
@@ -312,7 +303,7 @@ class AppstudMapLauncherTests: QuickSpec {
                 context("for Waze") {
                     beforeEach {
                         mapLauncher.application = ApplicationFake(openUrl: true)
-                        isOpened = mapLauncher.launchMapApp(.waze, fromDirections: fromPoint, toDirection: toPoint)
+                        isOpened = mapLauncher.launchMapApp(.waze, fromDirections: fromPoint, toDirections: toPoint)
                     }
 
                     it("should launch given map app") {
@@ -323,7 +314,7 @@ class AppstudMapLauncherTests: QuickSpec {
                 context("for Moovit") {
                     beforeEach {
                         mapLauncher.application = ApplicationFake(openUrl: true)
-                        isOpened = mapLauncher.launchMapApp(.moovit, fromDirections: fromPoint, toDirection: toPoint)
+                        isOpened = mapLauncher.launchMapApp(.moovit, fromDirections: fromPoint, toDirections: toPoint)
                     }
 
                     it("should launch given map app") {
@@ -335,7 +326,7 @@ class AppstudMapLauncherTests: QuickSpec {
                     beforeEach {
                         let application = ApplicationFake(openUrl: false)
                         mapLauncher.application = application
-                        isOpened = mapLauncher.launchMapApp(.waze, fromDirections: fromPoint, toDirection: toPoint)
+                        isOpened = mapLauncher.launchMapApp(.waze, fromDirections: fromPoint, toDirections: toPoint)
                     }
 
                     it("shouldn't launch given map app") {

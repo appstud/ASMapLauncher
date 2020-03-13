@@ -13,7 +13,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
 
     // map launcher
     fileprivate var mapLauncher: AppstudMapLauncher!
-    fileprivate var mapApps = [String]()
+    fileprivate var mapApps = [MapApp]()
 
     // location manager
     fileprivate var locationManager: CLLocationManager = CLLocationManager()
@@ -44,19 +44,42 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         self.mapApps = mapLauncher.getMapApps()
         let alertController = UIAlertController(title: "Choose your app for navigation", message: nil, preferredStyle: .actionSheet)
         for mapApp in self.mapApps {
-            let action = UIAlertAction(title: mapApp, style: .cancel) { action in
-                let destination: CLLocation! = CLLocation(latitude: 41.0053215, longitude: 29.0121795)
-                let fromMapPoint = MapPoint(location: CLLocation(latitude: self.currenctCoordinate.latitude,
-                                                                 longitude: self.currenctCoordinate.longitude),
-                                            name: "",
-                                            address: "")
-                let toMapPoint = MapPoint(location: CLLocation(latitude: destination.coordinate.latitude,
-                                                               longitude: destination.coordinate.longitude),
-                                          name: "",
-                                          address: "")
-                _ = self.mapLauncher.launchMapApp(MapApp(rawValue: mapApp)!, fromDirections: fromMapPoint, toDirection: toMapPoint)
+            // Launch apps with a given address
+//            let fromAddressMapPoint = MapPoint(location: nil,
+//                                        name: nil,
+//                                        address: "Appstud, 25 Rue Roquelaine, 31000 Toulouse")
+//            let toAddressMapPoint = MapPoint(location: nil,
+//                                      name: nil,
+//                                      address: "Aéroport Toulouse Blagnac, Toulouse")
+//            let fromAddressMapPoint = MapPoint(location: nil,
+//                                        name: nil,
+//                                        address: "Tour eiffel")
+//            let toAddressMapPoint = MapPoint(location: nil,
+//                                      name: nil,
+//                                      address: "La défense")
+//            if self.mapLauncher?.canLaunchMapApp(mapApp, fromDirections: fromAddressMapPoint, toDirections: toAddressMapPoint) ?? false {
+//                let action = UIAlertAction(title: mapApp.rawValue, style: .default) { action in
+//                    _ = self.mapLauncher.launchMapApp(mapApp, fromDirections: fromAddressMapPoint, toDirections: toAddressMapPoint, transportMode: .walk)
+//                }
+//                alertController.addAction(action)
+//            }
+            // Launch apps with a given location
+            let origin: CLLocation! = CLLocation(latitude: 48.86794504363833, longitude: 2.39399198534056)
+            let destination: CLLocation! = CLLocation(latitude: 48.862725, longitude: 2.287592)
+            let fromLocationMapPoint = MapPoint(location: CLLocation(latitude: origin.coordinate.latitude,
+                                                                     longitude: origin.coordinate.longitude),
+                                        name: nil,
+                                        address: nil)
+            let toLocationMapPoint = MapPoint(location: CLLocation(latitude: destination.coordinate.latitude,
+                                                           longitude: destination.coordinate.longitude),
+                                      name: nil,
+                                      address: nil)
+            if self.mapLauncher?.canLaunchMapApp(mapApp, fromDirections: fromLocationMapPoint, toDirections: toLocationMapPoint) ?? false {
+                let action = UIAlertAction(title: mapApp.rawValue, style: .default) { action in
+                    _ = self.mapLauncher.launchMapApp(mapApp, fromDirections: fromLocationMapPoint, toDirections: toLocationMapPoint, transportMode: .bike)
+                }
+                alertController.addAction(action)
             }
-            alertController.addAction(action)
         }
         present(alertController, animated: true, completion: nil)
     }
