@@ -68,7 +68,7 @@ class AppstudMapLauncherTests: QuickSpec {
                     var urlPrefix: String!
 
                     beforeEach {
-                        urlPrefix = MapApp.yandex.urlPrefix
+                        urlPrefix = MapApp.yandexNavi.urlPrefix
                     }
 
                     it("should return a valid prefix") {
@@ -202,7 +202,7 @@ class AppstudMapLauncherTests: QuickSpec {
             }
 
             context(".getMapApps()") {
-                var apps = [String]()
+                var apps = [MapApp]()
 
                 beforeEach {
                     apps = mapLauncher.getMapApps()
@@ -259,7 +259,7 @@ class AppstudMapLauncherTests: QuickSpec {
                 context("for Yandex Navigator") {
                     beforeEach {
                         mapLauncher.application = ApplicationFake(openUrl: true)
-                        isOpened = mapLauncher.launchMapApp(.yandex, fromDirections: fromPoint, toDirections: toPoint)
+                        isOpened = mapLauncher.launchMapApp(.yandexNavi, fromDirections: fromPoint, toDirections: toPoint)
                     }
 
                     it("should launch given map app") {

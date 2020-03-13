@@ -28,24 +28,35 @@ import UIKit
 import CoreLocation
 
 /**
+ Transport mode enum used for deep linking
+ */
+public enum TransportMode : String {
+    case drive,
+    ride,
+    bike,
+    walk
+}
+
+/**
   Supported map applications
  */
 public enum MapApp : String {
     case apple = "Apple Maps",
     here = "HERE Maps",
     google = "Google Maps",
-    yandex = "Yandex Navigator",
+    yandexNavi = "Yandex Navi",
+    yandexMaps = "Yandex Maps",
     citymapper = "Citymapper",
     navigon = "Navigon",
     transit = "The Transit App",
     waze = "Waze",
     moovit = "Moovit"
 
-    static let allValues = [apple, here, google, yandex, citymapper, navigon, transit, waze, moovit]
+    static let allValues = [apple, here, google, yandexNavi, yandexMaps, citymapper, navigon, transit, waze, moovit]
 
     var supportsAddress: Bool {
         switch self {
-        case .apple, .google:
+        case .apple, .google, .transit:
             return true
         default:
             return false
@@ -70,8 +81,10 @@ public enum MapApp : String {
             return "here-route://"
         case .google:
             return "comgooglemaps://"
-        case .yandex:
+        case .yandexNavi:
             return "yandexnavi://"
+        case .yandexMaps:
+            return "yandexmaps://"
         case .citymapper:
             return "citymapper://"
         case .navigon:
@@ -84,6 +97,21 @@ public enum MapApp : String {
             return "moovit://"
         default:
             return ""
+        }
+    }
+
+    var transportModes: [TransportMode: String] {
+        switch self {
+        case .here:
+            return [.drive: "d", .walk: "w", .bike: "b", .ride: "pt"]
+        case .google:
+            return [.drive: "driving", .ride: "transit", .bike: "bicycling", .walk: "walking"]
+        case .yandexMaps:
+            return [.drive: "auto", .ride: "mt", .walk: "pd"]
+        case .apple:
+            return [.drive: "d", .walk: "w", .ride: "r"]
+        default:
+            return [:]
         }
     }
 }
@@ -101,7 +129,7 @@ open class AppstudMapLauncher {
     /**
       Holds available map applications
      */
-    private var availableMapApps = [String]()
+    private var availableMapApps = [MapApp]()
     
     /**
       Initiliaze Map Launcher
@@ -118,7 +146,7 @@ open class AppstudMapLauncher {
     internal func getAvailableNavigationApps() {
         for type in MapApp.allValues {
             if isMapAppInstalled(type) {
-                availableMapApps.append(type.rawValue)
+                availableMapApps.append(type)
             }
         }
     }
@@ -164,8 +192,8 @@ open class AppstudMapLauncher {
       - parameter fromDirectionsName: String?
       - parameter toDirectionsName: String?
      */
-    open func launchMapApp(_ mapApp: MapApp, fromDirections: String, toDirections: String, fromDirectionsName: String?, toDirectionsName: String?) -> Bool {
-        if !isMapAppInstalled(mapApp) {
+    open func launchMapApp(_ mapApp: MapApp, fromDirections: String, toDirections: String, fromDirectionsName: String?, toDirectionsName: String?, transportMode: TransportMode) -> Bool {
+        if !isMapAppInstalledForAddress(mapApp) {
             return false
         }
         var urlString = ""
@@ -179,6 +207,9 @@ open class AppstudMapLauncher {
                            formatString(fromDirections),
                            formatString(toDirections))
 
+            urlString.append(getTransportModeParameter(for: mapApp, with: transportMode))
+        case .transit:
+            urlString = String(format: "\(MapApp.transit.urlPrefix)directions?from=%f&to=%f", fromDirections, toDirections)
         default:
             urlString = ""
             return false
@@ -196,6 +227,31 @@ open class AppstudMapLauncher {
     }
 
     /**
+     Launch navigation application with given app and directions
+     - parameter mapApp: MapApp
+     - parameter transportMode: TransportMode
+     - return the transport mode parameter to add to the url
+    */
+    func getTransportModeParameter(for mapApp: MapApp, with transportMode: TransportMode) -> String {
+        var parameterString = ""
+        if mapApp.transportModes.keys.contains(transportMode), let parameter = mapApp.transportModes[transportMode] {
+            switch mapApp {
+            case .here:
+                parameterString.append("?m=\(parameter)")
+            case .google:
+                parameterString.append("&directionsmode=\(parameter)")
+            case .yandexMaps:
+                parameterString.append("&rtt=\(parameter)")
+            case .apple:
+                parameterString.append("&dirflg=\(parameter)")
+            default:
+                parameterString.append("")
+            }
+        }
+        return parameterString
+    }
+
+    /**
       Launch navigation application with given app and directions
       - parameter mapApp: MapApp
       - parameter fromDirections: CLLocation
@@ -203,12 +259,12 @@ open class AppstudMapLauncher {
       - parameter fromDirectionsName: String?
       - parameter toDirectionsName: String?
      */
-    open func launchMapApp(_ mapApp: MapApp, fromDirections: CLLocation, toDirections: CLLocation, fromDirectionsName: String?, toDirectionsName: String?) -> Bool {
+    open func launchMapApp(_ mapApp: MapApp, fromDirections: CLLocation, toDirections: CLLocation, fromDirectionsName: String?, toDirectionsName: String?, transportMode: TransportMode) -> Bool {
         let fromLatitude = fromDirections.coordinate.latitude
         let fromLongitude = fromDirections.coordinate.longitude
         let toLatitude = toDirections.coordinate.latitude
         let toLongitude = toDirections.coordinate.longitude
-        if !isMapAppInstalled(mapApp) {
+        if !isMapAppInstalledForLocation(mapApp) {
             return false
         }
         var urlString = ""
@@ -239,8 +295,14 @@ open class AppstudMapLauncher {
             urlString = String(format: "\(MapApp.google.urlPrefix)?saddr=%@&daddr=%@",
                            googleMapsString(fromDirections, fromDirectionsName),
                            googleMapsString(toDirections, toDirectionsName))
-        case .yandex:
-            urlString = String(format: "\(MapApp.yandex.urlPrefix)build_route_on_map?lat_to=%f&lon_to=%f&lat_from=%f&lon_from=%f",
+        case .yandexMaps:
+            urlString = String(format: "\(MapApp.yandexMaps.urlPrefix)maps.yandex.ru/?rtext=%f,%f~%f,%f",
+            fromLatitude,
+            fromLongitude,
+            toLatitude,
+            toLongitude)
+        case .yandexNavi:
+            urlString = String(format: "\(MapApp.yandexNavi.urlPrefix)build_route_on_map?lat_to=%f&lon_to=%f&lat_from=%f&lon_from=%f",
                            toLatitude,
                            toLongitude,
                            fromLatitude,
@@ -294,6 +356,8 @@ open class AppstudMapLauncher {
                            urlEncode(fromDirectionsName ?? ""),
                            Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String ?? "")
         }
+
+        urlString.append(getTransportModeParameter(for: mapApp, with: transportMode))
         guard let url = URL(string: urlString) else {
             return false
         }
@@ -307,16 +371,32 @@ open class AppstudMapLauncher {
     }
 
     /**
+      Returns whether the given navigation application can be launched with given directions and mode
+      - parameter mapApp: MapApp
+      - parameter fromDirections: MapPoint
+      - parameter toDirections: MapPoint
+     */
+    open func canLaunchMapApp(_ mapApp: MapApp, fromDirections: MapPoint, toDirections: MapPoint) -> Bool {
+        var canLaunch = false
+        if fromDirections.location != nil, toDirections.location != nil {
+            canLaunch = canLaunch || isMapAppInstalledForLocation(mapApp)
+        } else if fromDirections.address != nil, toDirections.address != nil {
+            canLaunch = canLaunch || isMapAppInstalledForAddress(mapApp)
+        }
+        return canLaunch
+    }
+
+    /**
       Launch navigation application with given app and directions
       - parameter mapApp: MapApp
       - parameter fromDirections: MapPoint
       - parameter toDirections: MapPoint
      */
-    open func launchMapApp(_ mapApp: MapApp, fromDirections: MapPoint, toDirections: MapPoint) -> Bool {
+    open func launchMapApp(_ mapApp: MapApp, fromDirections: MapPoint, toDirections: MapPoint, transportMode: TransportMode = .drive) -> Bool {
         if let fromLocation = fromDirections.location, let toLocation = toDirections.location {
-            return launchMapApp(mapApp, fromDirections: fromLocation, toDirections: toLocation, fromDirectionsName: fromDirections.name, toDirectionsName: toDirections.name)
+            return launchMapApp(mapApp, fromDirections: fromLocation, toDirections: toLocation, fromDirectionsName: fromDirections.name, toDirectionsName: toDirections.name, transportMode: transportMode)
         } else if let fromAddress = fromDirections.address, let toAddress = toDirections.address {
-            return launchMapApp(mapApp, fromDirections: fromAddress, toDirections: toAddress, fromDirectionsName: fromDirections.name, toDirectionsName: toDirections.name)
+            return launchMapApp(mapApp, fromDirections: fromAddress, toDirections: toAddress, fromDirectionsName: fromDirections.name, toDirectionsName: toDirections.name, transportMode: transportMode)
         } else {
             return false
         }
@@ -372,7 +452,7 @@ open class AppstudMapLauncher {
       Returns available navigation apps
       - returns: Map Apps
      */
-    open func getMapApps() -> [String] {
+    open func getMapApps() -> [MapApp] {
         return availableMapApps
     }
     
