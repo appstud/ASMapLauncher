@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
     s.name                = 'AppstudMapLauncher'
-    s.version             = '1.0.0'
+    s.version             = '1.1.0'
     s.summary             = 'AppstudMapLauncher is a library for iOS written in Swift that helps navigation with various mapping applications'
     s.homepage            = 'https://github.com/appstud/AppstudMapLauncher'
     s.license             = {
