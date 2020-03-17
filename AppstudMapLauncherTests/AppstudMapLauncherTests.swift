@@ -15,17 +15,6 @@ class AppstudMapLauncherTests: QuickSpec {
     
     override func spec() {
         describe("AppstudMapLauncher Tests") {
-            var mapLauncher: AppstudMapLauncher!
-
-            beforeEach {
-                mapLauncher = AppstudMapLauncher()
-            }
-
-            context(".init()") {
-                it("should return a map launcher") {
-                    expect(mapLauncher).notTo(beNil())
-                }
-            }
 
             describe(".urlPrefixForMapApp(_:)") {
                 context("for Apple Maps") {
@@ -140,13 +129,13 @@ class AppstudMapLauncherTests: QuickSpec {
             describe(".isMapAppInstalled(_:)") {
                 context("for Apple Maps") {
                     it("it should return true") {
-                        expect(mapLauncher.isMapAppInstalledForLocation(.apple)).to(equal(true))
+                        expect(MapApp.apple.isInstalledForLocation()).to(equal(true))
                     }
                 }
 
                 context("for HERE Maps") {
                     it("it should return true") {
-                        expect(mapLauncher.isMapAppInstalledForLocation(.here)).to(equal(false))
+                        expect(MapApp.here.isInstalledForLocation()).to(equal(false))
                     }
                 }
             }
@@ -156,7 +145,7 @@ class AppstudMapLauncherTests: QuickSpec {
                     var deeplinkingString: String!
 
                     beforeEach {
-                        deeplinkingString = mapLauncher.googleMapsString(CLLocation(latitude: 10.0, longitude: 10.0), "TestName") as String
+                        deeplinkingString = (CLLocation(latitude: 10.0, longitude: 10.0).toGoogleMapsString(with: "TestName")) as String
                     }
 
                     it("should return a non nil string") {
@@ -168,7 +157,7 @@ class AppstudMapLauncherTests: QuickSpec {
                     var deeplinkingString: String!
 
                     beforeEach {
-                        deeplinkingString = mapLauncher.googleMapsString(CLLocation(latitude: -9999.99, longitude: -9999.00), "TestName") as String
+                        deeplinkingString = CLLocation(latitude: -9999.99, longitude: -9999.00).toGoogleMapsString(with: "TestName") as String
                     }
 
                     it("should return a empty string") {
@@ -180,7 +169,7 @@ class AppstudMapLauncherTests: QuickSpec {
                     var deeplinkingString: String!
 
                     beforeEach {
-                        deeplinkingString = mapLauncher.googleMapsString(CLLocation(latitude: 10.0, longitude: 10.0), "") as String
+                        deeplinkingString = CLLocation(latitude: 10.0, longitude: 10.0).toGoogleMapsString(with: "") as String
                     }
 
                     it("should return a string containts lat long") {
@@ -193,7 +182,7 @@ class AppstudMapLauncherTests: QuickSpec {
                 var encodedUrl: String!
 
                 beforeEach {
-                    encodedUrl = mapLauncher.urlEncode("http://github.com/appstud") as String
+                    encodedUrl = "http://github.com/appstud".urlEncode() as String
                 }
 
                 it("should return a valid url string") {
@@ -205,7 +194,7 @@ class AppstudMapLauncherTests: QuickSpec {
                 var apps = [MapApp]()
 
                 beforeEach {
-                    apps = mapLauncher.getMapApps()
+                    apps = MapApp.getAvailableNavigationApps()
                 }
 
                 it("should return an array") {
@@ -226,111 +215,11 @@ class AppstudMapLauncherTests: QuickSpec {
 
                 context("for Apple Maps") {
                     beforeEach {
-                        isOpened = mapLauncher.launchMapApp(.apple, fromDirections: fromPoint, toDirections: toPoint)
+                        isOpened = MapApp.apple.launch(fromDirections: fromPoint, toDirections: toPoint)
                     }
 
                     it("should launch given map app") {
                         expect(isOpened).to(equal(true))
-                    }
-                }
-
-                context("for HERE Maps") {
-                    beforeEach {
-                        mapLauncher.application = ApplicationFake(openUrl: true)
-                        isOpened = mapLauncher.launchMapApp(.here, fromDirections: fromPoint, toDirections: toPoint)
-                    }
-
-                    it("should launch given map app") {
-                        expect(isOpened).to(equal(true))
-                    }
-                }
-
-                context("for Google Maps") {
-                    beforeEach {
-                        mapLauncher.application = ApplicationFake(openUrl: true)
-                        isOpened = mapLauncher.launchMapApp(.google, fromDirections: fromPoint, toDirections: toPoint)
-                    }
-
-                    it("should launch given map app") {
-                        expect(isOpened).to(equal(true))
-                    }
-                }
-
-                context("for Yandex Navigator") {
-                    beforeEach {
-                        mapLauncher.application = ApplicationFake(openUrl: true)
-                        isOpened = mapLauncher.launchMapApp(.yandexNavi, fromDirections: fromPoint, toDirections: toPoint)
-                    }
-
-                    it("should launch given map app") {
-                        expect(isOpened).to(equal(true))
-                    }
-                }
-
-                context("for CityMapper") {
-                    beforeEach {
-                        mapLauncher.application = ApplicationFake(openUrl: true)
-                        isOpened = mapLauncher.launchMapApp(.citymapper, fromDirections: fromPoint, toDirections: toPoint)
-                    }
-
-                    it("should launch given map app") {
-                        expect(isOpened).to(equal(true))
-                    }
-                }
-
-                context("for Navigon") {
-                    beforeEach {
-                        mapLauncher.application = ApplicationFake(openUrl: true)
-                        isOpened = mapLauncher.launchMapApp(.navigon, fromDirections: fromPoint, toDirections: toPoint)
-                    }
-
-                    it("should launch given map app") {
-                        expect(isOpened).to(equal(true))
-                    }
-                }
-
-                context("for Transit") {
-                    beforeEach {
-                        mapLauncher.application = ApplicationFake(openUrl: true)
-                        isOpened = mapLauncher.launchMapApp(.transit, fromDirections: fromPoint, toDirections: toPoint)
-                    }
-
-                    it("should launch given map app") {
-                        expect(isOpened).to(equal(true))
-                    }
-                }
-
-                context("for Waze") {
-                    beforeEach {
-                        mapLauncher.application = ApplicationFake(openUrl: true)
-                        isOpened = mapLauncher.launchMapApp(.waze, fromDirections: fromPoint, toDirections: toPoint)
-                    }
-
-                    it("should launch given map app") {
-                        expect(isOpened).to(equal(true))
-                    }
-                }
-
-                context("for Moovit") {
-                    beforeEach {
-                        mapLauncher.application = ApplicationFake(openUrl: true)
-                        isOpened = mapLauncher.launchMapApp(.moovit, fromDirections: fromPoint, toDirections: toPoint)
-                    }
-
-                    it("should launch given map app") {
-                        expect(isOpened).to(equal(true))
-                    }
-                }
-
-                context("for HERE Maps when app is not installed") {
-                    beforeEach {
-                        let application = ApplicationFake(openUrl: false)
-                        mapLauncher.application = application
-                        isOpened = mapLauncher.launchMapApp(.waze, fromDirections: fromPoint, toDirections: toPoint)
-                    }
-
-                    it("shouldn't launch given map app") {
-                        expect(isOpened).to(equal(false))
                     }
                 }
             }

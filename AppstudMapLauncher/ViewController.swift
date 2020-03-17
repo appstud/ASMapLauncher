@@ -12,7 +12,6 @@ import MapKit
 class ViewController: UIViewController, CLLocationManagerDelegate {
 
     // map launcher
-    fileprivate var mapLauncher: AppstudMapLauncher!
     fileprivate var mapApps = [MapApp]()
 
     // location manager
@@ -29,7 +28,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         // Do any additional setup after loading the view, typically from a nib.
 
         locationManager.delegate = self
-        mapLauncher = AppstudMapLauncher()
 
         // get current location
         getLocation()
@@ -41,7 +39,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     }
 
     func showNavigationSheet() {
-        self.mapApps = mapLauncher.getMapApps()
+        self.mapApps = MapApp.getAvailableNavigationApps()
         let alertController = UIAlertController(title: "Choose your app for navigation", message: nil, preferredStyle: .actionSheet)
         for mapApp in self.mapApps {
             // Launch apps with a given address
@@ -51,15 +49,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
 //            let toAddressMapPoint = MapPoint(location: nil,
 //                                      name: nil,
 //                                      address: "Aéroport Toulouse Blagnac, Toulouse")
-//            let fromAddressMapPoint = MapPoint(location: nil,
-//                                        name: nil,
-//                                        address: "Tour eiffel")
-//            let toAddressMapPoint = MapPoint(location: nil,
-//                                      name: nil,
-//                                      address: "La défense")
-//            if self.mapLauncher?.canLaunchMapApp(mapApp, fromDirections: fromAddressMapPoint, toDirections: toAddressMapPoint) ?? false {
-//                let action = UIAlertAction(title: mapApp.rawValue, style: .default) { action in
-//                    _ = self.mapLauncher.launchMapApp(mapApp, fromDirections: fromAddressMapPoint, toDirections: toAddressMapPoint, transportMode: .walk)
+////            let fromAddressMapPoint = MapPoint(location: nil,
+////                                        name: nil,
+////                                        address: "Tour eiffel")
+////            let toAddressMapPoint = MapPoint(location: nil,
+////                                      name: nil,
+////                                      address: "La défense")
+//            if mapApp.canBeLaunched(fromDirections: fromAddressMapPoint, toDirections: toAddressMapPoint) {
+//                let action = UIAlertAction(title: mapApp.title, style: .default) { action in
+//                    _ = mapApp.launch(fromDirections: fromAddressMapPoint, toDirections: toAddressMapPoint, transportMode: .walk)
 //                }
 //                alertController.addAction(action)
 //            }
@@ -74,9 +72,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                                                            longitude: destination.coordinate.longitude),
                                       name: nil,
                                       address: nil)
-            if self.mapLauncher?.canLaunchMapApp(mapApp, fromDirections: fromLocationMapPoint, toDirections: toLocationMapPoint) ?? false {
-                let action = UIAlertAction(title: mapApp.rawValue, style: .default) { action in
-                    _ = self.mapLauncher.launchMapApp(mapApp, fromDirections: fromLocationMapPoint, toDirections: toLocationMapPoint, transportMode: .bike)
+            if mapApp.canBeLaunched(fromDirections: fromLocationMapPoint, toDirections: toLocationMapPoint) {
+                let action = UIAlertAction(title: mapApp.title, style: .default) { action in
+                    _ = mapApp.launch(fromDirections: fromLocationMapPoint, toDirections: toLocationMapPoint, transportMode: .bike)
                 }
                 alertController.addAction(action)
             }

@@ -7,13 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0DCBB40E2420D404006DB10C /* AppstudMapLauncher.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0DCBB4102420D404006DB10C /* AppstudMapLauncher.strings */; };
 		8024DC067FFD76E0DEB393DD /* Pods_AppstudMapLauncherTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE04587D88A31FC798BD253E /* Pods_AppstudMapLauncherTests.framework */; };
 		A4B94E801B238C94006FFC09 /* AppstudMapLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4B94E7F1B238C94006FFC09 /* AppstudMapLauncher.swift */; };
 		A4D1AB821F8AA73E00446421 /* MapPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4D1AB811F8AA73E00446421 /* MapPoint.swift */; };
 		A4D1AB831F8AA77C00446421 /* MapPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4D1AB811F8AA73E00446421 /* MapPoint.swift */; };
 		A4D1AB841F8AA79B00446421 /* MapPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4D1AB811F8AA73E00446421 /* MapPoint.swift */; };
 		A4D9005D1B2DEC9300FCD9B5 /* AppstudMapLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4B94E7F1B238C94006FFC09 /* AppstudMapLauncher.swift */; };
-		A4DF984C1DF747DC008704B8 /* ASMapLauncherFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = A4DF984A1DF747DC008704B8 /* ASMapLauncherFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A4DF984C1DF747DC008704B8 /* AppstudMapLauncherFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = A4DF984A1DF747DC008704B8 /* AppstudMapLauncherFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A4DF984F1DF747DC008704B8 /* AppstudMapLauncherFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4DF98481DF747DC008704B8 /* AppstudMapLauncherFramework.framework */; };
 		A4DF98501DF747DC008704B8 /* AppstudMapLauncherFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A4DF98481DF747DC008704B8 /* AppstudMapLauncherFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A4DF98551DF747E7008704B8 /* AppstudMapLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4B94E7F1B238C94006FFC09 /* AppstudMapLauncher.swift */; };
@@ -22,7 +23,7 @@
 		A4EC754B1B2362A900A4528E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A4EC75491B2362A900A4528E /* Main.storyboard */; };
 		A4EC754D1B2362A900A4528E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A4EC754C1B2362A900A4528E /* Images.xcassets */; };
 		A4EC75501B2362A900A4528E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = A4EC754E1B2362A900A4528E /* LaunchScreen.xib */; };
-		A4EC755C1B2362A900A4528E /* ASMapLauncherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EC755B1B2362A900A4528E /* ASMapLauncherTests.swift */; };
+		A4EC755C1B2362A900A4528E /* AppstudMapLauncherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EC755B1B2362A900A4528E /* AppstudMapLauncherTests.swift */; };
 		B0719AB4C6EFB72644991ED1 /* Pods_AppstudMapLauncher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D4BC70918C00F693A55CB00 /* Pods_AppstudMapLauncher.framework */; };
 /* End PBXBuildFile section */
 
@@ -58,13 +59,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0DCBB40F2420D404006DB10C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/AppstudMapLauncher.strings; sourceTree = "<group>"; };
 		1A8CE8424699F4E20F29696C /* Pods-AppstudMapLauncher.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AppstudMapLauncher.debug.xcconfig"; path = "Target Support Files/Pods-AppstudMapLauncher/Pods-AppstudMapLauncher.debug.xcconfig"; sourceTree = "<group>"; };
 		39120B26B90B95DABE95C6FE /* Pods-AppstudMapLauncher.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AppstudMapLauncher.release.xcconfig"; path = "Target Support Files/Pods-AppstudMapLauncher/Pods-AppstudMapLauncher.release.xcconfig"; sourceTree = "<group>"; };
 		7D4BC70918C00F693A55CB00 /* Pods_AppstudMapLauncher.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AppstudMapLauncher.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4B94E7F1B238C94006FFC09 /* AppstudMapLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppstudMapLauncher.swift; path = Source/AppstudMapLauncher.swift; sourceTree = "<group>"; };
 		A4D1AB811F8AA73E00446421 /* MapPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MapPoint.swift; path = Source/MapPoint.swift; sourceTree = "<group>"; };
 		A4DF98481DF747DC008704B8 /* AppstudMapLauncherFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AppstudMapLauncherFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A4DF984A1DF747DC008704B8 /* ASMapLauncherFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ASMapLauncherFramework.h; sourceTree = "<group>"; };
+		A4DF984A1DF747DC008704B8 /* AppstudMapLauncherFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppstudMapLauncherFramework.h; sourceTree = "<group>"; };
 		A4DF984B1DF747DC008704B8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A4EC75401B2362A900A4528E /* AppstudMapLauncher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppstudMapLauncher.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4EC75441B2362A900A4528E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -75,7 +77,7 @@
 		A4EC754F1B2362A900A4528E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		A4EC75551B2362A900A4528E /* AppstudMapLauncherTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppstudMapLauncherTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4EC755A1B2362A900A4528E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A4EC755B1B2362A900A4528E /* ASMapLauncherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASMapLauncherTests.swift; sourceTree = "<group>"; };
+		A4EC755B1B2362A900A4528E /* AppstudMapLauncherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppstudMapLauncherTests.swift; sourceTree = "<group>"; };
 		B8FD673E8A72CFBC81D2ADA0 /* Pods-AppstudMapLauncherTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AppstudMapLauncherTests.release.xcconfig"; path = "Target Support Files/Pods-AppstudMapLauncherTests/Pods-AppstudMapLauncherTests.release.xcconfig"; sourceTree = "<group>"; };
 		BE04587D88A31FC798BD253E /* Pods_AppstudMapLauncherTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AppstudMapLauncherTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB5498B4BA8090B48C249C11 /* Pods-AppstudMapLauncherTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AppstudMapLauncherTests.debug.xcconfig"; path = "Target Support Files/Pods-AppstudMapLauncherTests/Pods-AppstudMapLauncherTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -134,6 +136,7 @@
 			children = (
 				A4B94E7F1B238C94006FFC09 /* AppstudMapLauncher.swift */,
 				A4D1AB811F8AA73E00446421 /* MapPoint.swift */,
+				0DCBB4102420D404006DB10C /* AppstudMapLauncher.strings */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -141,7 +144,7 @@
 		A4DF98491DF747DC008704B8 /* AppstudMapLauncherFramework */ = {
 			isa = PBXGroup;
 			children = (
-				A4DF984A1DF747DC008704B8 /* ASMapLauncherFramework.h */,
+				A4DF984A1DF747DC008704B8 /* AppstudMapLauncherFramework.h */,
 				A4DF984B1DF747DC008704B8 /* Info.plist */,
 			);
 			path = AppstudMapLauncherFramework;
@@ -194,7 +197,7 @@
 		A4EC75581B2362A900A4528E /* AppstudMapLauncherTests */ = {
 			isa = PBXGroup;
 			children = (
-				A4EC755B1B2362A900A4528E /* ASMapLauncherTests.swift */,
+				A4EC755B1B2362A900A4528E /* AppstudMapLauncherTests.swift */,
 				A4EC75591B2362A900A4528E /* Supporting Files */,
 			);
 			path = AppstudMapLauncherTests;
@@ -215,7 +218,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A4DF984C1DF747DC008704B8 /* ASMapLauncherFramework.h in Headers */,
+				A4DF984C1DF747DC008704B8 /* AppstudMapLauncherFramework.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -346,6 +349,7 @@
 				A4EC754B1B2362A900A4528E /* Main.storyboard in Resources */,
 				A4EC75501B2362A900A4528E /* LaunchScreen.xib in Resources */,
 				A4EC754D1B2362A900A4528E /* Images.xcassets in Resources */,
+				0DCBB40E2420D404006DB10C /* AppstudMapLauncher.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -452,7 +456,7 @@
 			files = (
 				A4D1AB841F8AA79B00446421 /* MapPoint.swift in Sources */,
 				A4D9005D1B2DEC9300FCD9B5 /* AppstudMapLauncher.swift in Sources */,
-				A4EC755C1B2362A900A4528E /* ASMapLauncherTests.swift in Sources */,
+				A4EC755C1B2362A900A4528E /* AppstudMapLauncherTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -472,6 +476,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		0DCBB4102420D404006DB10C /* AppstudMapLauncher.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0DCBB40F2420D404006DB10C /* en */,
+			);
+			name = AppstudMapLauncher.strings;
+			sourceTree = "<group>";
+		};
 		A4EC75491B2362A900A4528E /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
