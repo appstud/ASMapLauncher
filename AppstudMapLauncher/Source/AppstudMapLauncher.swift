@@ -54,9 +54,10 @@ public enum MapApp : String {
 
     static let allValues = [apple, here, google, yandexNavi, yandexMaps, citymapper, navigon, transit, waze, moovit]
 
-    var title: String {
+    public var title: String {
         return NSLocalizedString("\(self.rawValue).title", tableName: "AppstudMapLauncher", bundle: Bundle(for: MapPoint.self), value: "\(self.rawValue)", comment: "")
     }
+
     var supportsAddress: Bool {
         switch self {
         case .apple, .google, .transit:
