@@ -346,7 +346,7 @@ public enum MapApp : String {
                            toLatitude,
                            toLongitude)
         case .moovit:
-            urlString = String(format: "\(MapApp.moovit.urlPrefix)directions?dest_lat=%f&dest_lon=%f&dest_name%@=&orig_lat=%f&orig_lon=%f&orig_name=%@&auto_run=true&partner_id=%@",
+            urlString = String(format: "\(MapApp.moovit.urlPrefix)directions?dest_lat=%f&dest_lon=%f&dest_name=%@&orig_lat=%f&orig_lon=%f&orig_name=%@&auto_run=true&partner_id=%@",
                            toLatitude,
                            toLongitude,
                            toDirectionsName?.urlEncode() ?? "",
