@@ -202,21 +202,26 @@ public enum MapApp : String {
      */
     public func launchWithoutNavigation(point: MapPoint, zoom: Int = 10) {
         guard let query = point.name else { return }
+        var urlString: String!
         switch self {
         case .apple:
-            let urlString = String(format: "http://maps.apple.com/?q=%@&z=%@",
+            urlString = String(format: "http://maps.apple.com/?q=%@&z=%@",
                                    query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? query,
                                                String(zoom))
-            guard let url = URL(string: urlString) else {
-                return
-            }
-            if #available(iOS 10.0, *) {
-                UIApplication.shared.openURL(url, options: [:], completionHandler: nil)
-            } else {
-                _ = UIApplication.shared.openUrl(url)
-            }
+        case .google:
+            urlString = String(format: "\(MapApp.google.urlPrefix)?api=1&query=%@&zoom=%@",
+                               query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? query,
+                                           String(zoom))
         default:
-            break
+            return
+        }
+        guard let url = URL(string: urlString) else {
+            return
+        }
+        if #available(iOS 10.0, *) {
+            UIApplication.shared.openURL(url, options: [:], completionHandler: nil)
+        } else {
+            _ = UIApplication.shared.openUrl(url)
         }
     }
     
