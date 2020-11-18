@@ -200,7 +200,8 @@ public enum MapApp : String {
       - parameter fromDirections: MapPoint
       - parameter toDirections: MapPoint
      */
-    public func launchWithoutNavigation(query: String, zoom: Int = 10) {
+    public func launchWithoutNavigation(point: MapPoint, zoom: Int = 10) {
+        guard let query = point.name else { return }
         switch self {
         case .apple:
             let urlString = String(format: "http://maps.apple.com/?q=%@&z=%@",
