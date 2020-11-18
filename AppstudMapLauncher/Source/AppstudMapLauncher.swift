@@ -200,6 +200,31 @@ public enum MapApp : String {
       - parameter fromDirections: MapPoint
       - parameter toDirections: MapPoint
      */
+    public func launchWithoutNavigation(query: String, zoom: Int = 10) {
+        switch self {
+        case .apple:
+            let urlString = String(format: "http://maps.apple.com/?q=%@&z=%@",
+                                   query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? query,
+                                               String(zoom))
+            guard let url = URL(string: urlString) else {
+                return
+            }
+            if #available(iOS 10.0, *) {
+                UIApplication.shared.openURL(url, options: [:], completionHandler: nil)
+            } else {
+                _ = UIApplication.shared.openUrl(url)
+            }
+        default:
+            break
+        }
+    }
+    
+    /**
+      Launch navigation application with given app and directions
+      - parameter mapApp: MapApp
+      - parameter fromDirections: MapPoint
+      - parameter toDirections: MapPoint
+     */
     public func launch(fromDirections: MapPoint, toDirections: MapPoint, transportMode: TransportMode = .drive) -> Bool {
         if let fromLocation = fromDirections.location, let toLocation = toDirections.location {
             return self.launch(fromDirections: fromLocation, toDirections: toLocation, fromDirectionsName: fromDirections.name, toDirectionsName: toDirections.name, transportMode: transportMode)
